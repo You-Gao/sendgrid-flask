@@ -35,15 +35,13 @@ class EmailForward(MethodView):
         attachment_info = request.form.get('attachment-info')
         charsets = request.form.get('charsets')
         spf = request.form.get('SPF')
-        print(from_email)
-        print(to)
-        print(subject)
-        print(html)
+
+        subject = subject + ' [From: ' + from_email + ']'
         message = Mail(
-            from_email=from_email,
+            from_email="inbox@yougao.dev",
             to_emails=to,
             subject=subject,
-            plain_text_content=text)
+            html_content=html)
         try:
             sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
             response = sg.send(message)
@@ -52,6 +50,7 @@ class EmailForward(MethodView):
             print(response.headers)
         except Exception as e:
             print(e.message)
+        
         return redirect(url_for('forward.EmailForward'))
 
 @bp.route('/send')
@@ -68,12 +67,9 @@ class SendEmail(MethodView):
         try:
             sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
             response = sg.send(message)
-            print(response.status_code)
-            print(response.body)
-            print(response.headers)
         except Exception as e:
             print(e.message)
-            
+                        
         return make_response('Email Sent')
     
     @bp.response(201)
