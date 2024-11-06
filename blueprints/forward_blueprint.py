@@ -41,8 +41,8 @@ class EmailForward(MethodView):
         message = Mail(
             from_email="inbox@yougao.dev",
             to_emails=to,
-            subject=subject,
-            html_content=html)
+            subject="testing",
+            html_content="<strong>testing</strong>")
         try:
             sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
             response = sg.send(message)
