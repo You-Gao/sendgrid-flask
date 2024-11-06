@@ -81,10 +81,12 @@ class SendEmail(MethodView):
         @bp.doc(description="Return pets based on ID", summary="Find pets by ID")
         @bp.response(200)
         def get(self):
+            with open("called.txt", "w") as f:
+                f.write("Visited")
             return make_response('Email Sent')
         
         @bp.response(201)
         def post(self):
             with open("called.txt", "w") as f:
                 f.write("Called")
-            return redirect(url_for('forward.TestEmail'))
+            return make_response('Email Sent', 201)
