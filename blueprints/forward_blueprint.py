@@ -40,7 +40,7 @@ class EmailForward(MethodView):
         subject = subject + ' [From: ' + from_email + ']'
         message = Mail(
             from_email="inbox@yougao.dev",
-            to_emails=to,
+            to_emails="yougaowork@gmail.com",
             subject="testing",
             html_content="<strong>testing</strong>")
         try:
@@ -52,7 +52,7 @@ class EmailForward(MethodView):
         except Exception as e:
             print(e.message)
         
-        return redirect(url_for('forward.EmailForward'))
+        return make_response('Email Sent', 201)
 
 @bp.route('/send')
 class SendEmail(MethodView):
