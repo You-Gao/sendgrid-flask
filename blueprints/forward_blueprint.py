@@ -2,6 +2,10 @@ from flask import render_template, request, redirect, url_for, flash, make_respo
 from flask_smorest import Blueprint
 from flask.views import MethodView
 
+import os
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
+
 bp = Blueprint('forward', 'forward', url_prefix='/forward', description='Forwarding SendGrid Email Payloads')
 
 @bp.route('/')
@@ -31,4 +35,47 @@ class EmailForward(MethodView):
         attachment_info = request.form.get('attachment-info')
         charsets = request.form.get('charsets')
         spf = request.form.get('SPF')
+        print(from_email)
+        print(to)
+        print(subject)
+        print(html)
+        message = Mail(
+            from_email=from_email,
+            to_emails=to,
+            subject=subject,
+            plain_text_content=text)
+        try:
+            sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+            response = sg.send(message)
+            print(response.status_code)
+            print(response.body)
+            print(response.headers)
+        except Exception as e:
+            print(e.message)
         return redirect(url_for('forward.EmailForward'))
+
+@bp.route('/send')
+class SendEmail(MethodView):
+    @bp.doc(description="Return pets based on ID", summary="Find pets by ID")
+    @bp.response(200)
+    def get(self):
+
+        message = Mail(
+            from_email='mail@yougao.dev',
+            to_emails='djx3rn@virginia.edu',
+            subject='Sending with Twilio SendGrid is Fun',
+            html_content='<strong>and easy to do anywhere, even with Python</strong>')
+        try:
+            sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+            response = sg.send(message)
+            print(response.status_code)
+            print(response.body)
+            print(response.headers)
+        except Exception as e:
+            print(e.message)
+            
+        return make_response('Email Sent')
+    
+    @bp.response(201)
+    def post(self):
+        return redirect(url_for('forward.SendEmail'))
