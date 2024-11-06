@@ -5,6 +5,7 @@ from flask.views import MethodView
 import os
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
+import logging as log
 
 bp = Blueprint('forward', 'forward', url_prefix='/forward', description='Forwarding SendGrid Email Payloads')
 
@@ -81,12 +82,16 @@ class SendEmail(MethodView):
         @bp.doc(description="Return pets based on ID", summary="Find pets by ID")
         @bp.response(200)
         def get(self):
-            with open("called.txt", "w") as f:
+            with open("/tmp/called.txt", "w") as f:
                 f.write("Visited")
+            log.info("Visited")
+
             return make_response('Email Sent')
         
         @bp.response(201)
         def post(self):
-            with open("called.txt", "w") as f:
-                f.write("Called")
+            with open("/tmp/called.txt", "w") as f:
+                f.write("Posted")
+            log.info("Posted")
+
             return make_response('Email Sent', 201)
