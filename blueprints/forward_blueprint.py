@@ -75,3 +75,16 @@ class SendEmail(MethodView):
     @bp.response(201)
     def post(self):
         return redirect(url_for('forward.SendEmail'))
+    
+    @bp.route('/test')
+    class TestEmail(MethodView):
+        @bp.doc(description="Return pets based on ID", summary="Find pets by ID")
+        @bp.response(200)
+        def get(self):
+            return make_response('Email Sent')
+        
+        @bp.response(201)
+        def post(self):
+            with open("called.txt", "w") as f:
+                f.write("Called")
+            return redirect(url_for('forward.TestEmail'))
